@@ -9,12 +9,12 @@ describe('transfer-sol', async () => {
   const client = context.banksClient;
   const payer = context.payer;
 
-  const transferAmount = 1 * LAMPORTS_PER_SOL;
+  const transferAmount = 3 * LAMPORTS_PER_SOL;
   const test1Recipient = Keypair.generate();
   const test2Recipient1 = Keypair.generate();
   const test2Recipient2 = Keypair.generate();
 
-  test('Transfer between accounts using the system program', async () => {
+  test('Transfer between accounts using the system program CPI', async () => {
     await getBalances(payer.publicKey, test1Recipient.publicKey, 'Beginning');
 
     const ix = createTransferInstruction(payer.publicKey, test1Recipient.publicKey, PROGRAM_ID, InstructionType.CpiTransfer, transferAmount);
@@ -26,7 +26,11 @@ describe('transfer-sol', async () => {
 
     await client.processTransaction(tx);
 
-    await getBalances(payer.publicKey, test1Recipient.publicKey, 'Resulting');
+    await getBalances(payer.publicKey, test1Recipient.publicKey, 'Resulting'); // test1Recipient has 3 SOL
+    // The balances should be the same as the beginning because the system program CPI doesn't actually transfer funds between accounts
+    // It only checks if the accounts have enough funds to transfer
+    // The actual transfer is done by the system program itself
+    // The balances are the same because the system program doesn't actually transfer funds between accounts
   });
 
   test('Create two accounts for the following test', async () => {
@@ -35,7 +39,7 @@ describe('transfer-sol', async () => {
         fromPubkey: payer.publicKey,
         newAccountPubkey: pubkey,
         space: 0,
-        lamports: 2 * LAMPORTS_PER_SOL,
+        lamports: 10 * LAMPORTS_PER_SOL,
         programId: PROGRAM_ID,
       });
     };
@@ -45,11 +49,11 @@ describe('transfer-sol', async () => {
     tx.recentBlockhash = blockhash;
     tx.add(ix(test2Recipient1.publicKey)).add(ix(test2Recipient2.publicKey)).sign(payer, test2Recipient1, test2Recipient2);
 
-    await client.processTransaction(tx);
+    await client.processTransaction(tx);  // test2Recipient1, test2Recipient2 has 10 SOL
   });
 
   test('Transfer between accounts using our program', async () => {
-    await getBalances(test2Recipient1.publicKey, test2Recipient2.publicKey, 'Beginning');
+    await getBalances(test2Recipient1.publicKey, test2Recipient2.publicKey, 'Beginning'); // test2Recipient1, test2Recipient2 has 10 SOL
 
     const ix = createTransferInstruction(
       test2Recipient1.publicKey,
@@ -67,6 +71,8 @@ describe('transfer-sol', async () => {
     await client.processTransaction(tx);
 
     await getBalances(test2Recipient1.publicKey, test2Recipient2.publicKey, 'Resulting');
+    // test2Recipient1 has 7 SOL, test2Recipient2 has 13 SOL
+    // The balances are different because the program actually transfers funds between accounts
   });
 
   async function getBalances(payerPubkey: PublicKey, recipientPubkey: PublicKey, timeframe: string) {

@@ -13,7 +13,7 @@ pub enum TransferInstruction {
 pub fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
-    input: &[u8],
+    input: &[u8],   // input is the encoded instruction
 ) -> ProgramResult {
     let instruction = TransferInstruction::try_from_slice(input)?;
     match instruction {

@@ -15,8 +15,9 @@ use {
     },
     spl_token::{instruction as token_instruction, state::Mint},
 };
+use mpl_token_auth_rules::payload::Payload;
 
-#[derive(BorshSerialize, BorshDeserialize, Debug)]
+#[derive(BorshDeserialize, Debug)]
 pub struct CreateTokenArgs {
     pub token_title: String,
     pub token_symbol: String,
@@ -35,14 +36,14 @@ fn process_instruction(
 
     let accounts_iter = &mut accounts.iter();
 
-    let mint_account = next_account_info(accounts_iter)?;
-    let mint_authority = next_account_info(accounts_iter)?;
-    let metadata_account = next_account_info(accounts_iter)?;
-    let payer = next_account_info(accounts_iter)?;
-    let rent = next_account_info(accounts_iter)?;
-    let system_program = next_account_info(accounts_iter)?;
-    let token_program = next_account_info(accounts_iter)?;
-    let token_metadata_program = next_account_info(accounts_iter)?;
+    let mint_account = next_account_info(accounts_iter)?;       // The account for the mint
+    let mint_authority = next_account_info(accounts_iter)?;     // The authority for the mint / wallet pubkey
+    let metadata_account = next_account_info(accounts_iter)?;   // The account for the metadata ???
+    let payer = next_account_info(accounts_iter)?;              
+    let rent = next_account_info(accounts_iter)?;               // Rent sysvar, account for rent ???
+    let system_program = next_account_info(accounts_iter)?;     //
+    let token_program = next_account_info(accounts_iter)?;      // The token program TokenQ
+    let token_metadata_program = next_account_info(accounts_iter)?; // The token metadata program, account for token metadata program ???
 
     // First create the account for the Mint
     //
@@ -52,9 +53,9 @@ fn process_instruction(
         &system_instruction::create_account(
             payer.key,
             mint_account.key,
-            (Rent::get()?).minimum_balance(Mint::LEN),
-            Mint::LEN as u64,
-            token_program.key,
+            (Rent::get()?).minimum_balance(Mint::LEN),      // Minimum balance for the mint account
+            Mint::LEN as u64,       // Size of the mint account
+            token_program.key,      // The program id for the mint account, TokenQ
         ),
         &[
             mint_account.clone(),
@@ -69,18 +70,18 @@ fn process_instruction(
     msg!("Initializing mint account...");
     msg!("Mint: {}", mint_account.key);
     invoke(
-        &token_instruction::initialize_mint(
+        &token_instruction::initialize_mint(    // Initialize the mint account
             token_program.key,
             mint_account.key,
-            mint_authority.key,
-            Some(mint_authority.key),
+            mint_authority.key,                 // Authority for the mint account
+            Some(mint_authority.key),           // Authority for the mint account, why twice?
             args.token_decimals,
         )?,
         &[
             mint_account.clone(),
             mint_authority.clone(),
             token_program.clone(),
-            rent.clone(),
+            rent.clone(),                       // Rent sysvar, clone of the rent account ???
         ],
     )?;
 

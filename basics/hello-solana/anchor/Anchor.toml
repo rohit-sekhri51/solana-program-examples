@@ -1,15 +1,17 @@
+[toolchain]
+
 [features]
-seeds = false
+resolution = true
 skip-lint = false
 
-[programs.localnet]
-hello_solana = "2phbC62wekpw95XuBk4i1KX4uA8zBUWmYbiTMhicSuBV"
+[programs.devnet]
+hello_solana = "3LeyxKG26wcrcjiUumj9fHASBGdmgeHDWHSsZd2Cintb"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

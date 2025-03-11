@@ -21,7 +21,7 @@ pub fn reallocate_without_zero_init(
 
     let address_info_data = AddressInfo::try_from_slice(&target_account.data.borrow())?;
     let enhanced_address_info_data =
-        EnhancedAddressInfo::from_address_info(address_info_data, args.state, args.zip);
+        EnhancedAddressInfo::from_address_info(address_info_data, args.state, args.zip); // append state and zip to AddressInfo
 
     let account_span = (enhanced_address_info_data.try_to_vec()?).len();
     let lamports_required = (Rent::get()?).minimum_balance(account_span);
@@ -37,6 +37,7 @@ pub fn reallocate_without_zero_init(
     )?;
 
     target_account.realloc(account_span, false)?;
+    // target_account.data.borrow_mut().fill(0);   // what is this for ? AI suggest 
 
     enhanced_address_info_data.serialize(&mut &mut target_account.data.borrow_mut()[..])?;
 
@@ -49,7 +50,7 @@ pub fn reallocate_zero_init(accounts: &[AccountInfo], data: WorkInfo) -> Program
 
     let account_span = (data.try_to_vec()?).len();
 
-    target_account.realloc(account_span, true)?;
+    target_account.realloc(account_span, true)?;    // where is this method defined ? Ans: solana-program/src/account_info.rs
 
     data.serialize(&mut &mut target_account.data.borrow_mut()[..])?;
 

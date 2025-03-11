@@ -20,7 +20,7 @@ describe('Realloc!', async () => {
 
   test('Create the account with data', async () => {
     console.log(`${testAccount.publicKey}`);
-    const ix = createCreateInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Jacob', 123, 'Main St.', 'Chicago');
+    const ix = createCreateInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Rohit', 222, 'Sector 17', 'Chandigarh');
 
     const tx = new Transaction();
     tx.recentBlockhash = context.lastBlockhash;
@@ -31,9 +31,13 @@ describe('Realloc!', async () => {
   });
 
   test('Reallocate WITHOUT zero init', async () => {
-    const ix = createReallocateWithoutZeroInitInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Illinois', 12345);
+    const ix = createReallocateWithoutZeroInitInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Punjab', 160051);
     const tx = new Transaction();
-    const [blockHash, _blockHeight] = await client.getLatestBlockhash();
+    const latestBlockhash = await client.getLatestBlockhash();
+    if (!latestBlockhash) {
+      throw new Error('Failed to get latest blockhash');
+    }
+    const [blockHash, _blockHeight] = latestBlockhash;
     tx.recentBlockhash = blockHash;
     tx.add(ix).sign(payer);
     await client.processTransaction(tx);
@@ -42,9 +46,13 @@ describe('Realloc!', async () => {
   });
 
   test('Reallocate WITH zero init', async () => {
-    const ix = createReallocateZeroInitInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Pete', 'Engineer', 'Solana Labs', 2);
+    const ix = createReallocateZeroInitInstruction(testAccount.publicKey, payer.publicKey, PROGRAM_ID, 'Sekhri', 'Developer', 'Solana Devs', 2);
     const tx = new Transaction();
-    const [blockHash, _blockHeight] = await client.getLatestBlockhash();
+    const latestBlockhash = await client.getLatestBlockhash();
+    if (!latestBlockhash) {
+      throw new Error('Failed to get latest blockhash');
+    }
+    const [blockHash, _blockHeight] = latestBlockhash;
     tx.recentBlockhash = blockHash;
     tx.add(ix).sign(payer);
     await client.processTransaction(tx);

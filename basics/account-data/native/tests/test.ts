@@ -4,7 +4,7 @@ import { Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction 
 import * as borsh from 'borsh';
 import { start } from 'solana-bankrun';
 
-class Assignable {
+class Assignable {    // Assignable class is used to assign the properties to the class
   constructor(properties) {
     for (const [key, value] of Object.entries(properties)) {
       this[key] = value;
@@ -27,10 +27,10 @@ class AddressInfo extends Assignable {
 }
 const AddressInfoSchema = new Map([
   [
-    AddressInfo,
-    {
-      kind: 'struct',
-      fields: [
+    AddressInfo,        // Format is NOT Typescript but Borsh format
+    {                   // AddressInfo is a class which is used to define the schema of the data
+      kind: 'struct',   // kind is used to define the type of the data
+      fields: [         // fields is used to define the properties of the data
         ['name', 'string'],
         ['house_number', 'u8'],
         ['street', 'string'],
@@ -49,9 +49,11 @@ describe('Account Data!', async () => {
   test('Create the address info account', async () => {
     const payer = context.payer;
 
-    console.log(`Program Address      : ${PROGRAM_ID}`);
-    console.log(`Payer Address      : ${payer.publicKey}`);
-    console.log(`Address Info Acct  : ${addressInfoAccount.publicKey}`);
+    console.log(`Program Address      : ${PROGRAM_ID}`);    // It is not SystemProgram.programId but any random ProgramId
+    console.log(`Payer Address      : ${payer.publicKey}`); // It is the address of the payer
+    console.log(`Address Info Acct  : ${addressInfoAccount.publicKey}`);  
+    // It is the address of the account, which will store the data, which is created by the payer
+    // Not present, just created for the sake of testing
 
     const ix = new TransactionInstruction({
       keys: [
@@ -65,11 +67,12 @@ describe('Account Data!', async () => {
       ],
       programId: PROGRAM_ID,
       data: new AddressInfo({
-        name: 'Joe C',
-        house_number: 136,
-        street: 'Mile High Dr.',
-        city: 'Solana Beach',
+        name: 'Rohit Sekhri',
+        house_number: 251,
+        street: 'Sector 12A',
+        city: 'Panchkula',
       }).toBuffer(),
+      // buffer is used to covert into array of bytes
     });
 
     const blockhash = context.lastBlockhash;
@@ -85,7 +88,7 @@ describe('Account Data!', async () => {
 
     const readAddressInfo = AddressInfo.fromBuffer(Buffer.from(accountInfo.data));
     console.log(`Name     : ${readAddressInfo.name}`);
-    console.log(`House Num: ${readAddressInfo.house_number}`);
+    console.log(`House Number: ${readAddressInfo.house_number}`);
     console.log(`Street   : ${readAddressInfo.street}`);
     console.log(`City     : ${readAddressInfo.city}`);
   });

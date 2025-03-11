@@ -15,11 +15,11 @@ fn process_instruction(
     //
     let instruction_data_object = InstructionData::try_from_slice(instruction_data)?;
 
-    msg!("Welcome to the park, {}!", instruction_data_object.name);
+    msg!("Welcome to the Town Park, Sector -5, PKL, {}!", instruction_data_object.name);
     if instruction_data_object.height > 5 {
         msg!("You are tall enough to ride this ride. Congratulations.");
     } else {
-        msg!("You are NOT tall enough to ride this ride. Sorry mate.");
+        msg!("You are NOT tall enough to ride this ride. Sorry bhai.");
     };
 
     Ok(())

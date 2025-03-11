@@ -3,13 +3,13 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use crate::state::AddressInfo;
 
 #[derive(BorshDeserialize, BorshSerialize, Debug)]
-pub struct EnhancedAddressInfoExtender {
+pub struct EnhancedAddressInfoExtender {    // extend AddressInfo with state and zip
     pub state: String,
     pub zip: u32,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Debug)]
-pub struct EnhancedAddressInfo {
+pub struct EnhancedAddressInfo {        // append state and zip to AddressInfo
     pub name: String,
     pub house_number: u8,
     pub street: String,

@@ -12,7 +12,7 @@ pub struct PageVisits {
 impl PageVisits {
     pub const ACCOUNT_SPACE: usize = 8 + 32;
 
-    pub const SEED_PREFIX: &'static str = "page_visits";
+    pub const SEED_PREFIX: &'static str = "page_visits";        // The seed prefix for the program derived address
 
     pub fn new(page_visits: u32, bump: u8) -> Self {
         PageVisits { page_visits, bump }

@@ -39,6 +39,9 @@ pub fn create_address_info(
         ],
     )?;
 
+    // Serialize the data (AddressInfo) into the target_account 
+    // using the BorshSerialize trait
+    // original.serialize(&mut buffer).unwrap();  // client side ?
     data.serialize(&mut &mut target_account.data.borrow_mut()[..])?;
     Ok(())
 }

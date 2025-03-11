@@ -62,8 +62,8 @@ describe('Create Tokens!', async () => {
     // SPL Token default = 9 decimals
     //
     const instructionData = new CreateTokenArgs({
-      token_title: 'Solana Gold',
-      token_symbol: 'GOLDSOL',
+      token_title: 'Gold Solana',
+      token_symbol: 'SOLGOLD',
       token_uri: 'https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json',
       token_decimals: 9,
     });
@@ -105,8 +105,8 @@ describe('Create Tokens!', async () => {
     // NFT default = 0 decimals
     //
     const instructionData = new CreateTokenArgs({
-      token_title: 'Homer NFT',
-      token_symbol: 'HOMR',
+      token_title: 'Roamer NFT',
+      token_symbol: 'ROAM',
       token_uri: 'https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/nft.json',
       token_decimals: 9,
     });

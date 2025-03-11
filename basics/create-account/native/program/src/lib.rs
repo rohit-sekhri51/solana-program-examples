@@ -11,6 +11,11 @@ use solana_program::{
 
 entrypoint!(process_instruction);
 
+// target/so/program.so is the output of the build process
+// this is the entry point of the program
+// GFKh38EB9Eu5N2VjckSd7cifQkHbWf7zVDgqxM2nowmY confirmed Keypair.fromSecretKey(Uint8Array.from(arry));
+// target PublicKey: explorer says executable flag as yes.
+
 fn process_instruction(
     _program_id: &Pubkey,
     accounts: &[AccountInfo],
@@ -24,11 +29,14 @@ fn process_instruction(
     msg!("Program invoked. Creating a system account...");
     msg!("  New public key will be: {}", &new_account.key.to_string());
 
+    // invoke system instruction to create a new account
+    // invoke instruction is used to call another program from the current program
+    // therefore we are calling it CPI (Cross Program Invocation)
     invoke(
         &system_instruction::create_account(
             payer.key,
             new_account.key,
-            LAMPORTS_PER_SOL,
+            2 * LAMPORTS_PER_SOL,
             0,
             &system_program::ID,
         ),
